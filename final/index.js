@@ -30,9 +30,11 @@ function updateAll(date) {
         let endDate = document.querySelector('input[type="date"][id="endDate"]');
         end = endDate.value;
     } else {
-        begin = handleDay(date, -1);
+        temp = handleDay(date, -1);
+        begin = turnDateFormat(temp)
         end = date;
-        console.log(begin, end)
+
+        console.log("this is", begin, end)
     }
 
     // remove previous output
@@ -43,7 +45,7 @@ function updateAll(date) {
     getData().then(value => {
         let data = value
         // 時間範圍內的data都用這個getSelectedData(begin, end)抓
-        // console.log(getSelectedData(begin, end))
+        console.log(getSelectedData(begin, end))
 
         Promise.all([
             d3.json(geo_path)
@@ -89,12 +91,6 @@ function updateAll(date) {
                 d3.select(this).attr("fill-opacity", 1);
             }) */
 
-            /* var tooltip = d3.select("#svg-container")
-                    .append("div")
-                    .attr("class","tooltip")
-                    .style("opacity",0.0) */
-
-            //line93~170，磊的部分
             var Tooltip = d3.select("#svg-container")
                 .append("div")
                 .style("opacity", 0)
@@ -129,49 +125,39 @@ function updateAll(date) {
                         return "#CC0000";
                     }
                 })
-                .attr("r", 2)
+                //.attr("r", 2)
+                .attr("r", function (d) {
+                    if (date == 0) {
+                        return 2;
+                    }
+                    return d.MagnitudeValue * 2
+                })
                 .on("mouseover", function (event, d) {
                     Tooltip
                         .style("opacity", 1)
-                        .html("日期：" + d.Year + "/" + d.Month + "/" + d.Day +
+                        /* .html("日期：" + d.Year + "/" + d.Month + "/" + d.Day +
                             "<br>時間：" + d.Hour + ":" + d.Minute + ":" + d.Second +
+                            "<br>震級：" + d.MagnitudeValue) */
+                        .html("日期：" + d.Year + "/" + d.Month + "/" + d.Day +
+                            "<br>時間：" + turnTimeFormat(d.Hour) + ":" + turnTimeFormat(d.Minute) + ":" + turnTimeFormat(d.Second) +
                             "<br>震級：" + d.MagnitudeValue)
-                    /*
-                    .style("background-color",function(d) {
-                        if(parseFloat(d.MagnitudeValue) <= 3) {
-                            return "#55AA00";
-                        } else if (parseFloat(d.MagnitudeValue) > 3 && parseFloat(d.MagnitudeValue) <= 4) {
-                            return "#227700"; 
-                        } else if (parseFloat(d.MagnitudeValue) > 4 && parseFloat(d.MagnitudeValue) <= 5) {
-                            return "#FFCC22";
-                        } else if (parseFloat(d.MagnitudeValue) > 5 && parseFloat(d.MagnitudeValue) <= 6) {
-                            return "#EE7700";
-                        } else {
-                            return "#CC0000";
-                        }
-                    })
-                    */
                     d3.selectAll(".mapPoint").style("opacity", 0)
                     d3.select(this).style("opacity", 1)
                         .attr("r", function (d) {
-                            return d.MagnitudeValue * 2
+                            return d.MagnitudeValue * 3;
                         })
-
-                    /* 
-                    const [x, y] = d3.pointer(event)
-                    Tooltip.html(d.MagnitudeValue)
-                        .style("left",(x)+ "px")
-                        .style("top",(y)+"px")
-                        .style("opacity",1.0)
-                        .style("font-weight", 800)
-                        .style('font-family','sans-serif'); */
-
                 })
-                .on('mouseout', function () {
+                .on('mouseout', function (d) {
                     Tooltip
                         .style("opacity", 0)
-                    d3.selectAll("circle").style("opacity", 1)
-                        .attr("r", 2)
+                    d3.selectAll(".mapPoint").style("opacity", 1)
+                        //.attr("r", 2)   
+                        .attr("r", function (d) {
+                            if (date == 0) {
+                                return 2;
+                            }
+                            return d.MagnitudeValue * 2
+                        })
                 })
 
             var pointGroup = ["<=3", "3~4", "4~5", "5~6", ">6"]
@@ -258,7 +244,7 @@ function updateAll(date) {
             for (index in data) {
                 var d = data[index].Year + "-" + data[index].Month + "-" + data[index].Day;
                 let date = new Date(d);
-                if (date.getTime() > beginDate.getTime() && date.getTime() < endDate.getTime()) {
+                if (date.getTime() > beginDate.getTime() && date.getTime() <= endDate.getTime()) {
                     dataList.push(data[index]);
                 } else {
                     continue;
@@ -271,7 +257,7 @@ function updateAll(date) {
     })
 }
 
-// 播放的功能
+// 查詢功能
 function autoUpdate() {
     let beginDate = document.querySelector('input[type="date"][id="beginDate"]');
     let b = beginDate.value;
@@ -281,30 +267,21 @@ function autoUpdate() {
     let e = endDate.value;
     let endD = new Date(e);
 
-    // date format yyyy-mm-dd
-    let str = (beginD.getFullYear() + "-" + ('0' + (beginD.getMonth() + 1)).slice(-2) + "-" + ('0' + beginD.getDate()).slice(-2))
+    let searchDate = document.querySelector('input[type="date"][id="searchDate"]');
+    let s = searchDate.value;
+    let searchD = new Date(s);
+
+    let str = turnDateFormat(searchD)
     console.log(str)
     updateAll(str)
 
-    /* while(beginD.getTime() < endD.getTime()) {
-        (function(x) {
-            setTimeout(function() {
-                let dateStr = (beginD.getFullYear() + "-" + ('0' + (beginD.getMonth()+1)).slice(-2) + "-" + ('0' + beginD.getDate()).slice(-2))
-                console.log(dateStr)
-            }, 2000 * x);
-        })
-        beginD = handleDay(beginD, 1)
-    } */
-
     // 這個會印出beginDate到endDate之間的每個日期
     // dateStr format : yyyy-mm-dd
-    // 把每個日期放進UpdateAll(date)執行，就可以播放
-    // 目前時間間隔設定有問題
-    while (beginD.getTime() < endD.getTime()) {
-        let dateStr = (beginD.getFullYear() + "-" + ('0' + (beginD.getMonth() + 1)).slice(-2) + "-" + ('0' + beginD.getDate()).slice(-2))
+    /* while(beginD.getTime() < endD.getTime()) {
+        let dateStr = (beginD.getFullYear() + "-" + ('0' + (beginD.getMonth()+1)).slice(-2) + "-" + ('0' + beginD.getDate()).slice(-2))
         console.log(dateStr)
         beginD = handleDay(beginD, 1)
-    }
+    } */
 }
 
 // 日期的加減
@@ -314,6 +291,21 @@ function handleDay(date, days) {
     return res;
 }
 
+// date format yyyy-mm-dd
+function turnDateFormat(str) {
+    let res = (str.getFullYear() + "-" + ('0' + (str.getMonth() + 1)).slice(-2) + "-" + ('0' + str.getDate()).slice(-2))
+    return res;
+}
+
+function turnTimeFormat(time) {
+    let res = ""
+    if (parseInt(time) >= 0 && parseInt(time) < 10) {
+        res = ("0" + time)
+    } else {
+        res = time;
+    }
+    return res
+}
 
 
 
