@@ -66,12 +66,14 @@
             <input type="date" id="beginDate" value="2021-01-01" min="1990-01-01" max="2021-12-31"><br>
             <label for="endDate">結束日期：</label>
             <input type="date" id="endDate" value="2021-12-31" min="1990-01-01" max="2021-12-31"><br>
-            <button onclick="updateAll(0);updateExtraData();" class="btn">送出</button>
-            <button onclick="autoUpdate()" class="btn">播放</button>
+            <button onclick="updateAll(0);updateExtraData(0);" class="btn">送出</button><br>
+            <label for="searchDate">查詢日期：</label>
+            <input type="date" id="searchDate" value="2021-12-31" min="1990-01-01" max="2021-12-31"><br>
+            <button onclick="autoUpdate();updateExtraData(1)" class="btn">查詢</button>
         </div>
         <div id="svg">
-            <div id="svg-container" style=""></div>
-            <div id="svg-container1" style=""></div>
+            <div id="svg-container"></div>
+            <div id="svg-container1"></div>
         </div>
         <!-- 長條圖 -->
         <div class="title">
