@@ -1,0 +1,122 @@
+*{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    box-sizing: border-box;
+}
+.main-wrapper{
+    width: 100%;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    padding: 0 24px;
+    padding-bottom: 120px;
+}
+.title{
+    align-self: center;
+    color: #3d3e2d;
+    margin: 16px 0;
+    margin-bottom: 24px;
+    /* border: 1px solid palevioletred; */
+}
+#svg{
+    border: 1px solid #3d3e2d;
+    padding: 16px;
+}
+.date-filter{
+    /* border: 1px solid green; */
+    margin: 16px 0;
+}
+.svg-init-wrapper-1{
+    position: relative;
+    /* border: 1px solid red; */
+    width: 640px;
+    height: 480px;
+}
+.svg-init-wrapper-2{
+    position: relative;
+    /* border: 1px solid red; */
+    width: 640px;
+    height: 480px;
+}
+.svg-init-wrapper-1 > span{
+    font-weight: bold;
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+.svg-init-wrapper-1 > .amount{
+    font-weight: bold;
+    position: absolute;
+    bottom: 50%;
+    left: 0px;
+    transform: translate(0%, -50%);
+}
+.svg-init-wrapper-2 > span{
+    font-weight: bold;
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+.svg-init-wrapper-2 > .range{
+    font-weight: bold;
+    position: absolute;
+    bottom: 50%;
+    left: -132px;
+    transform: translate(0%, -50%);
+}
+.svg-init-wrapper-2 .dots{
+    /* border: 1px solid red; */
+    position: absolute;
+    right: 24px;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+}
+.svg-init-wrapper-2 > .dots > div{
+    display: flex;
+    align-items: center;
+    margin: 2px 0;
+}
+.svg-init-wrapper-2 > .dots > div > span{
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 14px;
+}
+.svg-init-wrapper-2 > .dots > div > .dot{
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 12px;
+}
+.svg-init-wrapper-2 > .dots > div > .dot-1{
+    background-color: #BBBDF6;
+}
+.svg-init-wrapper-2 > .dots > div > .dot-2{
+    background-color: #70A288;
+}
+.svg-init-wrapper-2 > .dots > div > .dot-3{
+    background-color: #E40066;
+}
+.bar{
+	fill: #28C587;
+}
+/* Lighten the axis lines */
+#x-axis path,#y-axis line, #y-axis path{
+	stroke: #666;
+}
+/* Remove the tick marks on the x-axis */
+#x-axis .tick line{
+	visibility: hidden;
+}
+
+text{
+	fill: #666;
+	font-size: 12px;
+}
+
+#x-axis text {
+	font-weight: 600;
+}
